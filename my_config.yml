@@ -9,7 +9,7 @@ Global:
   # evaluation is run every 2000 iterations
   eval_batch_step: [0, 2000]
   cal_metric_during_train: False
-  pretrained_model: ./pretrain_models/MobileNetV3_large_x0_5_pretrained
+  pretrained_model: ./pretrain_models/ResNet18_vd_pretrained
   checkpoints:
   save_inference_dir:
   use_visualdl: False
@@ -45,8 +45,8 @@ Optimizer:
   beta2: 0.999
   lr:
     name: Cosine
-    warmup_epoch: 5
-    learning_rate: 0.01
+    learning_rate: 0.001
+    warmup_epoch: 2
   regularizer:
     name: 'L2'
     factor: 0
@@ -61,6 +61,7 @@ PostProcess:
 Metric:
   name: DetMetric
   main_indicator: hmean
+
 
 Train:
   dataset:
@@ -78,10 +79,10 @@ Train:
           augmenter_args:
             - { 'type': Fliplr, 'args': { 'p': 0.5 } }
             - { 'type': Affine, 'args': { 'rotate': [-10, 10] } }
-            - { 'type': Resize, 'args': { 'size': [0.5, 3] } }
+            - { 'type': Resize, 'args': { 'size': [0.5, 2] } }
       - EastRandomCropData:
           size: [640, 640]
-          max_tries: 50
+          max_tries: 5
           keep_ratio: true
       - MakeBorderMap:
           shrink_ratio: 0.4
@@ -101,7 +102,7 @@ Train:
   loader:
     shuffle: True
     drop_last: False
-    batch_size_per_card: 16
+    batch_size_per_card: 24
     num_workers: 4
     use_shared_memory: False
 
@@ -117,7 +118,7 @@ Eval:
           channel_first: False
       - DetLabelEncode: # Class handling label
       - DetResizeForTest:
-          image_shape: [736, 1280]
+          image_shape: [256, 352]
       - NormalizeImage:
           scale: 1./255.
           mean: [0.485, 0.456, 0.406]
@@ -132,8 +133,5 @@ Eval:
     batch_size_per_card: 1 # must be 1
     num_workers: 4
     use_shared_memory: False
-lr:
-  name: Cosine
-
 wandb:
   project: ocr_test_mbv3_db
