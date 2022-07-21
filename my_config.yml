@@ -1,10 +1,10 @@
 Global:
-  use_gpu: true
+  use_gpu: false
   use_xpu: false
   epoch_num: 500
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: /content/drive/MyDrive/ocr_out_dir/
+  save_model_dir: ./content/drive/MyDrive/ocr_out_dir/
   save_epoch_step: 1200
   # evaluation is run every 2000 iterations
   eval_batch_step: [0, 1500]
@@ -13,7 +13,7 @@ Global:
   checkpoints:
   save_inference_dir:
   use_visualdl: False
-  infer_img: /content/final_data/final_data/ocr_real/img_bkai/img_14.jpg
+  # infer_img: ./content/final_data/final_data/ocr_real/img_bkai/img_14.jpg
   save_res_path: ./output/det_db/predicts_db.txt
 
 Architecture:
@@ -48,7 +48,7 @@ Optimizer:
     learning_rate: 0.00001
     warmup_epoch: 2
   regularizer:
-    name: 'L2'
+    name: "L2"
     factor: 0
 
 PostProcess:
@@ -62,13 +62,12 @@ Metric:
   name: DetMetric
   main_indicator: hmean
 
-
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: /content/final_data/final_data/
+    data_dir: /Users/phanmanhtuan/Documents/code/ocr/final_data
     label_file_list:
-      - /content/final_data/final_data/train_gt_paddle.txt
+      - /Users/phanmanhtuan/Documents/code/ocr/final_data/train_gt_paddle.txt
     ratio_list: [1.0]
     transforms:
       - DecodeImage: # load image
@@ -77,9 +76,9 @@ Train:
       - DetLabelEncode: # Class handling label
       - IaaAugment:
           augmenter_args:
-            - { 'type': Fliplr, 'args': { 'p': 0.5 } }
-            - { 'type': Affine, 'args': { 'rotate': [-10, 10] } }
-            - { 'type': Resize, 'args': { 'size': [0.5, 2] } }
+            - { "type": Fliplr, "args": { "p": 0.5 } }
+            - { "type": Affine, "args": { "rotate": [-10, 10] } }
+            - { "type": Resize, "args": { "size": [0.5, 2] } }
       - EastRandomCropData:
           size: [640, 640]
           max_tries: 5
@@ -95,10 +94,16 @@ Train:
           scale: 1./255.
           mean: [0.485, 0.456, 0.406]
           std: [0.229, 0.224, 0.225]
-          order: 'hwc'
+          order: "hwc"
       - ToCHWImage:
       - KeepKeys:
-          keep_keys: ['image', 'threshold_map', 'threshold_mask', 'shrink_map', 'shrink_mask'] # the order of the dataloader list
+          keep_keys: [
+              "image",
+              "threshold_map",
+              "threshold_mask",
+              "shrink_map",
+              "shrink_mask",
+            ] # the order of the dataloader list
   loader:
     shuffle: True
     drop_last: False
@@ -109,9 +114,9 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: /content/final_data/final_data/
+    data_dir: /Users/phanmanhtuan/Documents/code/ocr/final_data/
     label_file_list:
-      - /content/final_data/final_data/test_gt_paddle.txt
+      - /Users/phanmanhtuan/Documents/code/ocr/final_data/train_gt_paddle.txt
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
@@ -123,10 +128,10 @@ Eval:
           scale: 1./255.
           mean: [0.485, 0.456, 0.406]
           std: [0.229, 0.224, 0.225]
-          order: 'hwc'
+          order: "hwc"
       - ToCHWImage:
       - KeepKeys:
-          keep_keys: ['image', 'shape', 'polys', 'ignore_tags']
+          keep_keys: ["image", "shape", "polys", "ignore_tags"]
   loader:
     shuffle: False
     drop_last: False

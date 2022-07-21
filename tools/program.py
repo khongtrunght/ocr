@@ -48,7 +48,7 @@ class ArgsParser(ArgumentParser):
             '--profiler_options',
             type=str,
             default=None,
-            help='The option of profiler, which should be in format ' \
+            help='The option of profiler, which should be in format '
                  '\"key1=value1;key2=value2;key3=value3\".'
         )
 
@@ -187,12 +187,12 @@ def train(config,
         eval_batch_step = eval_batch_step[1]
         if len(valid_dataloader) == 0:
             logger.info(
-                'No Images in eval dataset, evaluation during training ' \
+                'No Images in eval dataset, evaluation during training '
                 'will be disabled'
             )
             start_eval_step = 1e111
         logger.info(
-            "During the training process, after the {}th iteration, " \
+            "During the training process, after the {}th iteration, "
             "an evaluation is run every {} iterations".
             format(start_eval_step, eval_batch_step))
     save_epoch_step = config['Global']['save_epoch_step']
@@ -306,26 +306,26 @@ def train(config,
             stats['lr'] = lr
             train_stats.update(stats)
 
-
             if log_writer is not None and dist.get_rank() == 0:
-                log_writer.log_metrics(metrics=train_stats.get(), prefix="TRAIN", step=global_step)
+                log_writer.log_metrics(
+                    metrics=train_stats.get(), prefix="TRAIN", step=global_step)
 
             if dist.get_rank() == 0 and (
                 (global_step > 0 and global_step % print_batch_step == 0) or
-                (idx >= len(train_dataloader) - 1)):
+                    (idx >= len(train_dataloader) - 1)):
                 logs = train_stats.log()
 
-                eta_sec = ((epoch_num + 1 - epoch) * \
-                    len(train_dataloader) - idx - 1) * eta_meter.avg
+                eta_sec = ((epoch_num + 1 - epoch) *
+                           len(train_dataloader) - idx - 1) * eta_meter.avg
                 eta_sec_format = str(datetime.timedelta(seconds=int(eta_sec)))
                 strs = 'epoch: [{}/{}], global_step: {}, {}, avg_reader_cost: ' \
                        '{:.5f} s, avg_batch_cost: {:.5f} s, avg_samples: {}, ' \
                        'ips: {:.5f} samples/s, eta: {}'.format(
-                    epoch, epoch_num, global_step, logs,
-                    train_reader_cost / print_batch_step,
-                    train_batch_cost / print_batch_step,
-                    total_samples / print_batch_step,
-                    total_samples / train_batch_cost, eta_sec_format)
+                           epoch, epoch_num, global_step, logs,
+                           train_reader_cost / print_batch_step,
+                           train_batch_cost / print_batch_step,
+                           total_samples / print_batch_step,
+                           total_samples / train_batch_cost, eta_sec_format)
                 logger.info(strs)
 
                 total_samples = 0
@@ -355,7 +355,8 @@ def train(config,
 
                 # logger metric
                 if log_writer is not None:
-                    log_writer.log_metrics(metrics=cur_metric, prefix="EVAL", step=global_step)
+                    log_writer.log_metrics(
+                        metrics=cur_metric, prefix="EVAL", step=global_step)
 
                 if cur_metric[main_indicator] >= best_model_dict[
                         main_indicator]:
@@ -380,9 +381,10 @@ def train(config,
                 if log_writer is not None:
                     log_writer.log_metrics(metrics={
                         "best_{}".format(main_indicator): best_model_dict[main_indicator]
-                        }, prefix="EVAL", step=global_step)
-                    
-                    log_writer.log_model(is_best=True, prefix="best_accuracy", metadata=best_model_dict)
+                    }, prefix="EVAL", step=global_step)
+
+                    log_writer.log_model(
+                        is_best=True, prefix="best_accuracy", metadata=best_model_dict)
 
             reader_start = time.time()
         if dist.get_rank() == 0:
@@ -414,7 +416,8 @@ def train(config,
                 epoch=epoch,
                 global_step=global_step)
             if log_writer is not None:
-                log_writer.log_model(is_best=False, prefix='iter_epoch_{}'.format(epoch))
+                log_writer.log_model(
+                    is_best=False, prefix='iter_epoch_{}'.format(epoch))
 
     best_str = 'best metric, {}'.format(', '.join(
         ['{}: {}'.format(k, v) for k, v in best_model_dict.items()]))
@@ -521,7 +524,7 @@ def get_center(model, eval_dataloader, post_process_class):
         # Obtain usable results from post-processing methods
         post_result = post_process_class(preds, batch[1])
 
-        #update char_center
+        # update char_center
         char_center = update_center(char_center, post_result, preds)
         pbar.update(1)
 
@@ -593,7 +596,7 @@ def preprocess(is_train=False):
             wandb_params = config['wandb']
         else:
             wandb_params = dict()
-        wandb_params.update({'save_dir': save_model_dir})
+        # wandb_params.update({'save_dir': save_model_dir})
         log_writer = WandbLogger(**wandb_params, config=config)
         loggers.append(log_writer)
     else:
