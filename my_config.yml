@@ -116,7 +116,7 @@ Eval:
     name: SimpleDataSet
     data_dir: /Users/phanmanhtuan/Documents/code/ocr/final_data/
     label_file_list:
-      - /Users/phanmanhtuan/Documents/code/ocr/final_data/train_gt_paddle.txt
+      - /Users/phanmanhtuan/Documents/code/ocr/final_data/new_test_set.txt
     transforms:
       - DecodeImage: # load image
           img_mode: BGR
