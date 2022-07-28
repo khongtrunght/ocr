@@ -1,3 +1,6 @@
 final_data/
 exp/
 out/
+wandb/
+output/
+**/*.pyc

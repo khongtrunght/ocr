@@ -17,5 +17,7 @@ if you want to resume training from checkpoint, use `--checkpoint path/to/checkp
 
 `python3 tools/eval.py -c my_config.yml  -o Global.checkpoints="path/to/checkpoint" PostProcess.box_thresh=0.6 PostProcess.unclip_ratio=1.5`
 
+**Streamlit**
+`streamlit run  tools/streamlit_ocr.py  -- -c my_config.yml -o Global.checkpoints="path/to/checkpoint" PostProcess.box_thresh=0.6 PostProcess.unclip_ratio=1.5`
 
 *Format of training file txt like original VietOCR*
